@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     public Sprite[] frentes;
     public List<Carta> manoActual = new List<Carta>();
     public int maxCartasMano = 5;
+    public Transform manoIA;
+    public List<Carta> manoIAActual = new List<Carta>();
     #endregion
 
     #region Unity Lifecycle
@@ -19,7 +21,9 @@ public class GameController : MonoBehaviour
     {
         CrearMazo();
         mazo.Barajar();
-        StartCoroutine(RepartirCartasConDelay(5));
+        StartCoroutine(RepartirCartasConDelay(5)); 
+        StartCoroutine(RepartirCartasIA(5));      
+
     }
     #endregion
 
@@ -69,6 +73,35 @@ public class GameController : MonoBehaviour
                 robada.MostrarFrente();
             }
         }
+    }
+
+    private IEnumerator RepartirCartasIA(int cantidad)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        float spacing = 1.5f;
+        float totalWidth = (cantidad - 1) * spacing;
+        float startX = -totalWidth / 2f;
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            Carta robada = mazo.RobarCarta();
+
+            if (robada != null)
+            {
+                robada.transform.SetParent(manoIA); 
+                robada.enMano = false;
+                robada.MostrarDorso();
+
+                manoIAActual.Add(robada);
+
+                float x = startX + i * spacing;
+                Vector3 nuevaPosicion = new Vector3(x, 0, 0);
+                robada.SetPosicionOriginal(nuevaPosicion);
+            }
+        }
+
+        Debug.Log("IA recibió 5 cartas");
     }
     #endregion
 
