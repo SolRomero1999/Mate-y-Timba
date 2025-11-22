@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public Sprite[] frentes;
     public List<Carta> manoActual = new List<Carta>();
     public int maxCartasMano = 5;
+    public bool jugadorYaRobo = false;
     public Transform manoIA;
     public List<Carta> manoIAActual = new List<Carta>();
     #endregion
@@ -20,7 +21,7 @@ public class GameController : MonoBehaviour
     #region Unity Lifecycle
     private void Start()
     {
-        tablero = FindObjectOfType<Tablero>();
+        tablero = FindFirstObjectByType<Tablero>();
         CrearMazo();
         mazo.Barajar();
         StartCoroutine(RepartirCartasConDelay(5)); 
@@ -110,6 +111,12 @@ public class GameController : MonoBehaviour
     #region Robar cartas durante la partida
     public void IntentarRobarCarta()
     {
+        if (jugadorYaRobo)
+        {
+            Debug.Log("Ya robaste una carta este turno.");
+            return;
+        }
+
         if (manoActual.Count >= maxCartasMano)
         {
             Debug.Log("No puedes tener más de 5 cartas");
@@ -124,6 +131,8 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        jugadorYaRobo = true; 
+
         robada.transform.SetParent(manoJugador);
         robada.enMano = true;
         manoActual.Add(robada);
@@ -131,7 +140,8 @@ public class GameController : MonoBehaviour
         robada.MostrarFrente();
         Debug.Log("Robaste: " + robada.name);
 
-        FindObjectOfType<TurnManager>().TerminarTurnoJugador();
+        TurnManager tm = FindFirstObjectByType<TurnManager>();
+        tm.TerminarTurnoJugador();
     }
 
     public void RobarCartaIA()

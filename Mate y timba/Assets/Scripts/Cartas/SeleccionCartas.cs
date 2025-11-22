@@ -42,7 +42,7 @@ public class SeleccionCartas : MonoBehaviour
                     {
                         cartaSeleccionada.ColocarEnCelda(celda);
 
-                        TurnManager tm = FindObjectOfType<TurnManager>();
+                        TurnManager tm = FindFirstObjectByType<TurnManager>();
                         tm.TerminarTurnoJugador();
 
                         cartaSeleccionada = null;

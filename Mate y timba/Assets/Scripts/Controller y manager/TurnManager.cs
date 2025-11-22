@@ -3,8 +3,8 @@ using System.Collections;
 
 public class TurnManager : MonoBehaviour
 {
-    public GameController game;   // Referencia al GameController
-    public float delayIA = 1f;    // Tiempo que la IA tarda en actuar
+    public GameController game;  
+    public float delayIA = 1f;    
 
     private bool turnoJugador = true;
 
@@ -22,8 +22,8 @@ public class TurnManager : MonoBehaviour
     private void IniciarTurnoJugador()
     {
         turnoJugador = true;
+        FindFirstObjectByType<GameController>().jugadorYaRobo = false;
         Debug.Log("TURNO DEL JUGADOR");
-        // Aquí no hacemos nada más: el jugador actúa con sus clicks
     }
 
     public void TerminarTurnoJugador()
@@ -42,7 +42,6 @@ public class TurnManager : MonoBehaviour
 
         yield return new WaitForSeconds(delayIA);
 
-        // 1. Si la IA tiene menos de 5, roba
         if (game.manoIAActual.Count < 5)
         {
             Debug.Log("IA roba carta");
@@ -51,14 +50,12 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            // 2. Si tiene 5, juega una carta aleatoria
             Debug.Log("IA juega carta");
 
             game.IA_JugarCarta();
             yield return new WaitForSeconds(0.5f);
         }
 
-        // Después de actuar vuelve al jugador
         IniciarTurnoJugador();
     }
 }
