@@ -51,4 +51,24 @@ public class Tablero : MonoBehaviour
 
         return null; 
     }
+
+    public bool HayCeldasDisponiblesJugador()
+    {
+        for (int fila = 0; fila <= 3; fila++)
+            for (int col = 0; col < columns; col++)
+                if (!celdas[col, fila].GetComponent<Cell>().isOccupied)
+                    return true;
+
+        return false;
+    }
+
+    public bool HayCeldasDisponiblesIA()
+    {
+        for (int fila = 4; fila <= 7; fila++)
+            for (int col = 0; col < columns; col++)
+                if (!celdas[col, fila].GetComponent<Cell>().isOccupied)
+                    return true;
+
+        return false;
+    }
 }

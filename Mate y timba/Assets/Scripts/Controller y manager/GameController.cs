@@ -189,6 +189,7 @@ public class GameController : MonoBehaviour
         if (sm != null) sm.ActualizarPuntajes();
 
         Debug.Log($"IA jugó carta {carta.valor} en [{celda.column},{celda.row}]");
+        FindFirstObjectByType<TurnManager>().VerificarFinDePartida();
     }
     #endregion
 
