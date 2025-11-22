@@ -185,6 +185,9 @@ public class GameController : MonoBehaviour
         carta.MostrarFrente();
         manoIAActual.Remove(carta);
 
+        ScoreManager sm = FindFirstObjectByType<ScoreManager>();
+        if (sm != null) sm.ActualizarPuntajes();
+
         Debug.Log($"IA jugó carta {carta.valor} en [{celda.column},{celda.row}]");
     }
     #endregion

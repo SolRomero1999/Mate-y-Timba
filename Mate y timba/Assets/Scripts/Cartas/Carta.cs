@@ -155,6 +155,9 @@ public class Carta : MonoBehaviour
 
         Debug.Log(name + $" colocado en celda {celda.column},{celda.row}");
         AplicarReglaEliminacion(celda);
+
+        ScoreManager sm = FindFirstObjectByType<ScoreManager>();
+        if (sm != null) sm.ActualizarPuntajes();
     }
     #endregion
 
@@ -191,11 +194,14 @@ public class Carta : MonoBehaviour
 
                 rivalCelda.isOccupied = false;
                 Destroy(otraCarta.gameObject);
+
+                ScoreManager sm = FindFirstObjectByType<ScoreManager>();
+                if (sm != null) sm.ActualizarPuntajes();
             }
         }
     }
     #endregion
-    
+
     #region Visual
     public void MostrarFrente()
     {
