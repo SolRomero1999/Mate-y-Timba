@@ -139,7 +139,16 @@ public class Carta : MonoBehaviour
     {
         seleccionada = false;
         enMano = false;
-        celda.SetOccupied(true);
+        celda.SetOccupied(this);
+
+        if (this is CartaComodin comodin)
+        {
+            Tablero tablero = FindFirstObjectByType<Tablero>();
+            if (tablero != null)
+            {
+                comodin.ConfigurarValorInicial(celda, tablero);
+            }
+        }
 
         GameController gc = FindFirstObjectByType<GameController>();
 
@@ -154,10 +163,15 @@ public class Carta : MonoBehaviour
         transform.localPosition = Vector3.zero;
 
         Debug.Log(name + $" colocado en celda {celda.column},{celda.row}");
+        
         AplicarReglaEliminacion(celda);
 
         ScoreManager sm = FindFirstObjectByType<ScoreManager>();
-        if (sm != null) sm.ActualizarPuntajes();
+        if (sm != null) 
+        {
+            sm.ActualizarPuntajes();
+            Debug.Log($"Puntajes actualizados inmediatamente para {name} (valor: {valor})");
+        }
     }
     #endregion
 
