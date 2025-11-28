@@ -54,5 +54,6 @@ public class ItemComodin : MonoBehaviour
         }
 
         Debug.Log("Comodín colocado en columna " + celda.column);
+        Destroy(gameObject);
     }
 }

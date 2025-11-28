@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     public bool jugadorYaRobo = false;
     public Transform manoIA;
     public List<Carta> manoIAActual = new List<Carta>();
+    public UI_Items UI_Items;
     #endregion
 
     #region Unity Lifecycle

@@ -13,7 +13,7 @@ public class Cell : MonoBehaviour
     public Color hoverTint = new Color(0.8f, 1f, 0.8f, 1f);
 
     [HideInInspector] public bool isOccupied = false;
-    [HideInInspector] public Carta carta = null; // ← NUEVO
+    [HideInInspector] public Carta carta = null; 
 
     Color originalColor;
     Sprite originalSprite;
