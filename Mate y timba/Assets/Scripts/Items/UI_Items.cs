@@ -5,12 +5,16 @@ public class UI_Items : MonoBehaviour
 {
     #region Variables
     public Transform panelOpciones;
-    public GameObject cartaUIPrefab;
+    public GameObject cartaUIPrefab_Cerveza;
     public List<Carta> cartasMostradas = new List<Carta>();
 
     private GameController game;
     private bool modoPucho = false;
     private Carta cartaSeleccionada = null;
+
+    private bool modoMateLavado = false;
+    public GameObject cartaUIPrefab_Mate;
+
     #endregion
 
 
@@ -43,7 +47,7 @@ public class UI_Items : MonoBehaviour
 
         foreach (Carta c in cartasMostradas)
         {
-            GameObject ui = Instantiate(cartaUIPrefab, panelOpciones);
+            GameObject ui = Instantiate(cartaUIPrefab_Cerveza, panelOpciones);
             ui.GetComponent<UI_Carta>().Configurar(c, this);
         }
     }
@@ -159,6 +163,94 @@ public class UI_Items : MonoBehaviour
         }
 
         cartaSeleccionada = null;
+    }
+    #endregion
+
+    #region Mate
+        public void ActivarMate()
+    {
+        float r = Random.value;
+
+        if (r <= 0.70f)
+        {
+            MateRico();
+        }
+        else if (r <= 0.95f)
+        {
+            MateLavado();
+        }
+        else
+        {
+            MateFeo();
+        }
+    }
+
+    private void MateRico()
+    {
+        foreach (Carta c in new List<Carta>(game.manoActual))
+        {
+            if (c.celdaActual != null)
+                c.celdaActual.SetOccupied(null);
+
+            Destroy(c.gameObject);
+        }
+
+        game.manoActual.Clear();
+
+        int cantidad = 5;
+        for (int i = 0; i < cantidad; i++)
+        {
+            Carta nueva = game.mazo.RobarCarta();
+            nueva.transform.SetParent(game.manoJugador);
+            nueva.enMano = true;
+            game.manoActual.Add(nueva);
+            nueva.MostrarFrente();
+        }
+
+        game.ReordenarMano();
+    }
+
+    private void MateLavado()
+    {
+        modoMateLavado = true;
+
+        panelOpciones.gameObject.SetActive(true);
+
+        foreach (Transform child in panelOpciones)
+            Destroy(child.gameObject);
+
+        foreach (Carta c in game.manoActual)
+        {
+            GameObject ui = Instantiate(cartaUIPrefab_Mate, panelOpciones);
+            ui.GetComponent<UI_Carta>().Configurar(c, this);
+        }
+    }
+
+    public void SeleccionarCartaParaDescartar(Carta c)
+    {
+        if (!modoMateLavado) return;
+
+        modoMateLavado = false;
+
+        if (c.celdaActual != null)
+            c.celdaActual.SetOccupied(null);
+
+        game.manoActual.Remove(c);
+        Destroy(c.gameObject);
+
+        Carta nueva = game.mazo.RobarCarta();
+        nueva.transform.SetParent(game.manoJugador);
+        nueva.enMano = true;
+        game.manoActual.Add(nueva);
+        nueva.MostrarFrente();
+        game.ReordenarMano();
+        panelOpciones.gameObject.SetActive(false);
+    }
+
+    private void MateFeo()
+    {
+        FindFirstObjectByType<TurnManager>().ForzarFinTurnoJugador();
+
     }
     #endregion
 }

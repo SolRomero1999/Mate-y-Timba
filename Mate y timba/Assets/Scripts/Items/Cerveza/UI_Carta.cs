@@ -19,4 +19,9 @@ public class UI_Carta : MonoBehaviour
     {
         controlador.ElegirCarta(cartaReal);
     }
+
+    public void OnClick()
+    {
+        controlador.SeleccionarCartaParaDescartar(cartaReal);
+    }
 }

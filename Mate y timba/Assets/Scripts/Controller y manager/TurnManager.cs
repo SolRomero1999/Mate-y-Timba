@@ -40,6 +40,12 @@ public class TurnManager : MonoBehaviour
         VerificarFinDePartida();
         StartCoroutine(TurnoIA());
     }
+
+    public void ForzarFinTurnoJugador()
+    {
+        turnoJugador = false;
+        StartCoroutine(TurnoIA());
+    }
     #endregion
 
     #region Turno IA
