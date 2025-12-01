@@ -3,24 +3,27 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    #region Variables
+    [Header("Referencias")]
     public Tablero tablero;
+
+    [Header("UI Puntajes")]
     public TextMeshProUGUI puntajeTotalJugador;
     public TextMeshProUGUI puntajeTotalIA;
-    public TextMeshProUGUI[] puntajeFilasJugador;   
-    public TextMeshProUGUI[] puntajeFilasIA;        
-    public TextMeshProUGUI[] puntajeColumnasJugador; 
-    public TextMeshProUGUI[] puntajeColumnasIA;
-    #endregion
 
-    #region Unity Methods
+    public TextMeshProUGUI[] puntajeFilasJugador;
+    public TextMeshProUGUI[] puntajeFilasIA;
+
+    public TextMeshProUGUI[] puntajeColumnasJugador;
+    public TextMeshProUGUI[] puntajeColumnasIA;
+
+    #region Unity
     private void Start()
     {
         tablero = FindFirstObjectByType<Tablero>();
     }
     #endregion
 
-    #region Public Methods
+    #region Actualización total
     public void ActualizarPuntajes()
     {
         CalcularFilas();
@@ -29,139 +32,140 @@ public class ScoreManager : MonoBehaviour
     }
     #endregion
 
-    #region Cálculo de Filas
+    #region Filas
     private void CalcularFilas()
     {
-        for (int fila = 0; fila < 8; fila++)
+        int mitad = tablero.rows / 2;
+
+        for (int fila = 0; fila < tablero.rows; fila++)
         {
             int puntaje = CalcularPuntajeFila(fila);
 
-            if (fila <= 3)
+            if (fila < mitad)
                 puntajeFilasJugador[fila].text = puntaje.ToString();
             else
-                puntajeFilasIA[fila - 4].text = puntaje.ToString();
+                puntajeFilasIA[fila - mitad].text = puntaje.ToString();
         }
     }
 
     private int CalcularPuntajeFila(int fila)
     {
-        int[] valores = new int[4];
+        int[] valores = new int[tablero.columns];
         int count = 0;
 
-        for (int c = 0; c < 4; c++)
+        for (int c = 0; c < tablero.columns; c++)
         {
-            Transform celdaT = tablero.celdas[c, fila];
-            if (celdaT == null) continue;
+            Transform t = tablero.celdas[c, fila];
+            if (t == null) continue;
 
-            Cell cell = celdaT.GetComponent<Cell>();
-            if (cell == null || !cell.isOccupied || cell.carta == null) continue;
+            Cell celda = t.GetComponent<Cell>();
+            if (celda == null || !celda.isOccupied || celda.carta == null) continue;
 
-            valores[count] = cell.carta.valor;
-            count++;
+            valores[count++] = celda.carta.valor;
         }
 
         return AplicarReglasPuntaje(valores, count);
     }
     #endregion
 
-    #region Cálculo de Columnas
+    #region Columnas
     private void CalcularColumnas()
     {
-        for (int col = 0; col < 4; col++)
-        {
-            int puntajeJugador = CalcularPuntajeColumna(col, 0, 3);
-            int puntajeIA = CalcularPuntajeColumna(col, 4, 7);
+        int mitad = tablero.rows / 2;
 
-            puntajeColumnasJugador[col].text = puntajeJugador.ToString();
-            puntajeColumnasIA[col].text = puntajeIA.ToString();
+        for (int col = 0; col < tablero.columns; col++)
+        {
+            int pj = CalcularPuntajeColumna(col, 0, mitad - 1);
+            int pi = CalcularPuntajeColumna(col, mitad, tablero.rows - 1);
+
+            puntajeColumnasJugador[col].text = pj.ToString();
+            puntajeColumnasIA[col].text = pi.ToString();
         }
     }
 
     private int CalcularPuntajeColumna(int col, int filaInicio, int filaFin)
     {
-        int[] valores = new int[4];
+        int[] valores = new int[tablero.rows];
         int count = 0;
 
         for (int fila = filaInicio; fila <= filaFin; fila++)
         {
-            Transform celdaT = tablero.celdas[col, fila];
-            if (celdaT == null) continue;
+            Transform t = tablero.celdas[col, fila];
+            if (t == null) continue;
 
-            Cell cell = celdaT.GetComponent<Cell>();
-            if (cell == null || !cell.isOccupied || cell.carta == null) continue;
+            Cell celda = t.GetComponent<Cell>();
+            if (celda == null || !celda.isOccupied || celda.carta == null) continue;
 
-            valores[count] = cell.carta.valor;
-            count++;
+            valores[count++] = celda.carta.valor;
         }
 
         return AplicarReglasPuntaje(valores, count);
     }
     #endregion
 
-    #region Cálculo de Totales
+    #region Totales
     private void CalcularTotales()
     {
+        int mitad = tablero.rows / 2;
         int totalJugador = 0;
         int totalIA = 0;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < mitad; i++)
             totalJugador += int.Parse(puntajeFilasJugador[i].text);
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < mitad; i++)
             totalIA += int.Parse(puntajeFilasIA[i].text);
 
-        for (int i = 0; i < 4; i++)
-            totalJugador += int.Parse(puntajeColumnasJugador[i].text);
+        for (int j = 0; j < tablero.columns; j++)
+            totalJugador += int.Parse(puntajeColumnasJugador[j].text);
 
-        for (int i = 0; i < 4; i++)
-            totalIA += int.Parse(puntajeColumnasIA[i].text);
+        for (int j = 0; j < tablero.columns; j++)
+            totalIA += int.Parse(puntajeColumnasIA[j].text);
 
         puntajeTotalJugador.text = totalJugador.ToString();
         puntajeTotalIA.text = totalIA.ToString();
     }
     #endregion
 
-    #region Reglas de Puntaje
+    #region Reglas de puntaje
     private int AplicarReglasPuntaje(int[] valores, int count)
     {
         if (count == 0) return 0;
 
         System.Array.Sort(valores, 0, count);
 
-        if (count == 4 &&
-            valores[0] == valores[1] &&
-            valores[1] == valores[2] &&
-            valores[2] == valores[3])
+        // 4 iguales
+        if (count == 4 && valores[0] == valores[3])
         {
             int suma4 = valores[0] * 4;
             return suma4 * 4;
         }
 
+        // ternas
         if (count >= 3)
         {
-            bool trio1 = valores[0] == valores[1] && valores[1] == valores[2];
-            bool trio2 = count == 4 && valores[1] == valores[2] && valores[2] == valores[3];
+            bool t1 = valores[0] == valores[1] && valores[1] == valores[2];
+            bool t2 = (count == 4 && valores[1] == valores[2] && valores[2] == valores[3]);
 
-            if (trio1 || trio2)
+            if (t1 || t2)
             {
-                int valorTrio = trio1 ? valores[0] : valores[1];
-                int sumaTrio = valorTrio * 3; 
-                int totalTrio = sumaTrio * 3;
+                int v = t1 ? valores[0] : valores[1];
+                int suma = v * 3;
+                int total = suma * 3;
 
                 if (count == 4)
-                {
-                    if (trio1) totalTrio += valores[3];
-                    else totalTrio += valores[0];
-                }
+                    total += t1 ? valores[3] : valores[0];
 
-                return totalTrio;
+                return total;
             }
         }
-        int suma = 0;
-        for (int i = 0; i < count; i++)
-            suma += valores[i];
 
-        return suma;
+        // suma normal
+        int s = 0;
+        for (int i = 0; i < count; i++)
+            s += valores[i];
+
+        return s;
     }
     #endregion
 }

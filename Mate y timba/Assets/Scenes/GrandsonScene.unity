@@ -763,9 +763,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueAutoAdvance
   dialogueText: {fileID: 1984898542}
-  lines:
+  linesInicial:
   - Hola
   - "Papi dice que te gusta jugar a las cartas\u2026 \xBFQui\xE9n te ense\xF1\xF3?"
+  linesPostTutorial:
+  - "\xBFY jugabas a mi edad tambi\xE9n?"
   charsPerSecond: 40
   continuarButton: {fileID: 1450467872}
 --- !u!1 &1953153007

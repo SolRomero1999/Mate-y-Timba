@@ -183,39 +183,41 @@ public class Carta : MonoBehaviour
     #region Regla de eliminaciòn
     private void AplicarReglaEliminacion(Cell celda)
     {
+        if (!LevelManager.reglasEliminacionActivas)
+            return; 
+
         Tablero tablero = FindFirstObjectByType<Tablero>();
         if (tablero == null) return;
 
         int col = celda.column;
         int fila = celda.row;
 
-        bool soyJugador = fila >= 0 && fila <= 3;  
-        bool soyIA = fila >= 4 && fila <= 7;      
+        bool soyJugador = tablero.EsFilaJugador(fila);
+        bool soyIA = tablero.EsFilaRival(fila);
 
         int valorColocado = valor;
-        int filaInicioRival = soyJugador ? 4 : 0;
-        int filaFinRival = soyJugador ? 7 : 3;
+
+        int filaInicioRival = soyJugador ? tablero.filasJugador : 0;
+        int filaFinRival = soyJugador ? tablero.rows - 1 : tablero.filasJugador - 1;
 
         for (int f = filaInicioRival; f <= filaFinRival; f++)
         {
-            Transform t = tablero.ObtenerCelda(col, f);
-            if (t == null) continue;
+            Cell rivalCelda = tablero.ObtenerCelda(col, f)?.GetComponent<Cell>();
+            if (rivalCelda == null || !rivalCelda.isOccupied)
+                continue;
 
-            if (!t.TryGetComponent<Cell>(out Cell rivalCelda)) continue;
-            if (rivalCelda.isOccupied == false) continue;
-
-            Carta otraCarta = t.GetComponentInChildren<Carta>();
+            Carta otraCarta = rivalCelda.GetComponentInChildren<Carta>();
             if (otraCarta == null) continue;
 
             if (otraCarta.valor == valorColocado)
             {
-                Debug.Log($"ELIMINACIÓN: Carta {otraCarta.valor} en columna {col}");
+                Debug.Log($"ELIMINACIÓN: {otraCarta.valor} en columna {col}");
 
                 rivalCelda.SetOccupied(null);
                 Destroy(otraCarta.gameObject);
 
                 ScoreManager sm = FindFirstObjectByType<ScoreManager>();
-                if (sm != null) sm.ActualizarPuntajes();
+                sm?.ActualizarPuntajes();
             }
         }
     }

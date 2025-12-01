@@ -6,11 +6,17 @@ using System.Collections;
 public class DialogueManualAdvance : MonoBehaviour
 {
     public TMP_Text dialogueText;
-    [TextArea] public string[] lines;
-    public float charsPerSecond = 40f;
 
+    [Header("Diálogo inicial")]
+    [TextArea] public string[] linesInicial;
+
+    [Header("Diálogo después del tutorial")]
+    [TextArea] public string[] linesPostTutorial;
+
+    public float charsPerSecond = 40f;
     public Button continuarButton;
 
+    private string[] lines;  
     private int index = 0;
     private bool isTyping = false;
     private Coroutine typingCoroutine;
@@ -20,6 +26,9 @@ public class DialogueManualAdvance : MonoBehaviour
         continuarButton.onClick.AddListener(NextLine);
         dialogueText.text = "";
         index = 0;
+
+        lines = LevelManager.dialogoPostTutorial ? linesPostTutorial : linesInicial;
+
         NextLine();
     }
 
@@ -27,18 +36,25 @@ public class DialogueManualAdvance : MonoBehaviour
     {
         if (index >= lines.Length && !isTyping)
         {
-            Debug.Log("Fin diálogo → iniciar nivel");
-            LevelManager.StartLevel();
+            Debug.Log("Fin diálogo");
+
+            if (LevelManager.dialogoPostTutorial)
+            {
+                LevelManager.dialogoPostTutorial = false;
+                LevelManager.StartLevelNormal();
+            }
+            else
+            {
+                LevelManager.StartLevelTuto();
+            }
+
             return;
         }
 
         if (isTyping)
         {
             StopCoroutine(typingCoroutine);
-
-            int safeIndex = Mathf.Clamp(index, 0, lines.Length - 1);
-
-            dialogueText.text = lines[safeIndex];
+            dialogueText.text = lines[Mathf.Clamp(index, 0, lines.Length - 1)];
             isTyping = false;
             return;
         }
