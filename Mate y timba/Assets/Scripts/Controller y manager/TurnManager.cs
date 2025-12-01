@@ -5,6 +5,7 @@ using TMPro;
 public class TurnManager : MonoBehaviour
 {
     public GameController game;
+    public GameObject panelResultado;
     public TextMeshProUGUI mensajeFinal;
     public float delayIA = 1f;
     private bool turnoJugador = true;
@@ -12,6 +13,11 @@ public class TurnManager : MonoBehaviour
     #region Inicio
     private void Start()
     {
+        if (panelResultado != null)
+            panelResultado.SetActive(false);
+
+        mensajeFinal.gameObject.SetActive(false);
+
         StartCoroutine(IniciarTurnos());
     }
 
@@ -93,25 +99,40 @@ public class TurnManager : MonoBehaviour
         int puntosIA = int.Parse(sm.puntajeTotalIA.text);
         int diferencia = Mathf.Abs(puntosJugador - puntosIA);
 
+        panelResultado.SetActive(true);
         mensajeFinal.gameObject.SetActive(true);
 
         if (puntosJugador > puntosIA)
         {
             mensajeFinal.text = $"<color=#4CFF4C>VICTORIA</color>\nGanaste por {diferencia} puntos.";
             Debug.Log("VICTORIA DEL JUGADOR");
+
+            LevelManager.NextLevel();
+            StartCoroutine(VolverAlNieto());
         }
         else if (puntosIA > puntosJugador)
         {
             mensajeFinal.text = $"<color=#FF4C4C>DERROTA</color>\nLa IA ganó por {diferencia} puntos.";
             Debug.Log("DERROTA – La IA gana");
+
+            StartCoroutine(VolverAlNieto());
         }
         else
         {
             mensajeFinal.text = "<color=#FFFF66>EMPATE</color>";
             Debug.Log("EMPATE");
+
+            StartCoroutine(VolverAlNieto());
         }
 
         Time.timeScale = 0f;
+    }
+
+    private IEnumerator VolverAlNieto()
+    {
+        yield return new WaitForSecondsRealtime(2.5f);
+        Time.timeScale = 1f;
+        LevelManager.GoToDialogue();
     }
     #endregion
 }
