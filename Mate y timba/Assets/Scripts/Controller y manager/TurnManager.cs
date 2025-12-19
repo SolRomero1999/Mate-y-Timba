@@ -8,9 +8,9 @@ public class TurnManager : MonoBehaviour
     public GameObject panelResultado;
     public TextMeshProUGUI mensajeFinal;
     public float delayIA = 1f;
+
     private bool turnoJugador = true;
     private bool partidaTerminada = false;
-
 
     #region Inicio
     private void Start()
@@ -65,7 +65,7 @@ public class TurnManager : MonoBehaviour
 
         if (game.manoIAActual.Count < 5)
         {
-            game.RobarCartaIA();
+            game.ia.RobarCartaIA();
             yield return new WaitForSeconds(0.5f);
         }
         else
@@ -90,12 +90,13 @@ public class TurnManager : MonoBehaviour
         {
             FinalizarPartida();
         }
+
         Debug.Log($"[DEBUG FIN] JugadorCeldas:{jugadorTieneCeldas} | IACeldas:{iaTieneCeldas} | MazoVacio:{mazoVacio}");
     }
 
     private void FinalizarPartida()
     {
-        if (partidaTerminada) return;  
+        if (partidaTerminada) return;
         partidaTerminada = true;
 
         ScoreManager sm = FindFirstObjectByType<ScoreManager>();
@@ -117,7 +118,7 @@ public class TurnManager : MonoBehaviour
                 LevelManager.tutorialDialogoVisto = true;
 
                 LevelManager.UltimoNivelCompletado = 0;
-                LevelManager.CurrentLevel = 1; 
+                LevelManager.CurrentLevel = 1;
 
                 StartCoroutine(VolverADialogo());
             }

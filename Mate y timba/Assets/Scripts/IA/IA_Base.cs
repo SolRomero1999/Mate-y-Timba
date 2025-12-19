@@ -11,5 +11,10 @@ public abstract class IA_Base : MonoBehaviour
         tablero = gameController.tablero;
     }
 
+    public virtual void RobarCartaIA()
+    {
+        game.RobarCartaIA();
+    }
+
     public abstract void JugarTurno();
 }

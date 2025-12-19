@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Tablero : MonoBehaviour
 {
@@ -72,6 +73,27 @@ public class Tablero : MonoBehaviour
         }
 
         return null;
+    }
+
+    public List<Cell> ObtenerCeldasLibresIA()
+    {
+        List<Cell> libres = new List<Cell>();
+        int inicio = filasJugador;
+
+        for (int fila = inicio; fila < inicio + filasIA; fila++)
+        {
+            for (int col = 0; col < columns; col++)
+            {
+                Transform t = celdas[col, fila];
+                if (t == null) continue;
+
+                Cell celda = t.GetComponent<Cell>();
+                if (celda != null && !celda.isOccupied)
+                    libres.Add(celda);
+            }
+        }
+
+        return libres;
     }
     #endregion
 
