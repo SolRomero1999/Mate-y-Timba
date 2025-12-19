@@ -7650,7 +7650,7 @@ MonoBehaviour:
   manoIA: {fileID: 1126849749}
   manoIAActual: []
   UI_Items: {fileID: 0}
-  ia: {fileID: 1603352842}
+  ia: {fileID: 1603352844}
 --- !u!4 &1283011277
 Transform:
   m_ObjectHideFlags: 0
@@ -8958,7 +8958,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1603352843}
-  - component: {fileID: 1603352842}
+  - component: {fileID: 1603352844}
   m_Layer: 0
   m_Name: IA
   m_TagString: Untagged
@@ -8966,18 +8966,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1603352842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1603352841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acf32a1356b7c4f4f958fa03a7d53fa4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IA_PrimerN
 --- !u!4 &1603352843
 Transform:
   m_ObjectHideFlags: 0
@@ -8993,6 +8981,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1953153008}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1603352844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603352841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc7d771ca8143d04895f089be2044e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IA_SegundoN
 --- !u!1 &1635080230
 GameObject:
   m_ObjectHideFlags: 0
