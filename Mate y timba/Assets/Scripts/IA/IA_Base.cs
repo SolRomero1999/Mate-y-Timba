@@ -1,0 +1,15 @@
+using UnityEngine;
+
+public abstract class IA_Base : MonoBehaviour
+{
+    protected GameController game;
+    protected Tablero tablero;
+
+    public virtual void Inicializar(GameController gameController)
+    {
+        game = gameController;
+        tablero = gameController.tablero;
+    }
+
+    public abstract void JugarTurno();
+}

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class GameController : MonoBehaviour
 {
     #region Variables públicas
@@ -17,17 +18,23 @@ public class GameController : MonoBehaviour
     public Transform manoIA;
     public List<Carta> manoIAActual = new List<Carta>();
     public UI_Items UI_Items;
+    [Header("IA")]
+    public IA_Base ia;
     #endregion
 
     #region Unity Lifecycle
     private void Start()
     {
         tablero = FindFirstObjectByType<Tablero>();
+
+        ia = FindFirstObjectByType<IA_Base>();
+        if (ia != null)
+            ia.Inicializar(this);
+
         CrearMazo();
         mazo.Barajar();
-        StartCoroutine(RepartirCartasConDelay(5)); 
-        StartCoroutine(RepartirCartasIA(5));      
-
+        StartCoroutine(RepartirCartasConDelay(5));
+        StartCoroutine(RepartirCartasIA(5));
     }
     #endregion
 

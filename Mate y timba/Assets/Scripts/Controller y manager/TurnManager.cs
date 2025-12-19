@@ -70,7 +70,7 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            game.IA_JugarCarta();
+            game.ia.JugarTurno();
             yield return new WaitForSeconds(0.5f);
         }
 
