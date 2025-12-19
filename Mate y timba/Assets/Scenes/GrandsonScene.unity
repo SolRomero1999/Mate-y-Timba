@@ -853,6 +853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueAutoAdvance
   dialogueText: {fileID: 2070958979}
+  continuarButton: {fileID: 1538300586}
   linesInicial:
   - Hola
   - "Papi dice que te gusta jugar a las cartas\u2026 \xBFQui\xE9n te ense\xF1\xF3?"
@@ -864,8 +865,13 @@ MonoBehaviour:
   linesPostNivel2:
   - "Si peleaban cuando jugaban\u2026 \xBFpor qu\xE9 segu\xEDan?\n//PASA AL TERCER
     NIVEL"
+  linesDerrota:
+  - LINEA DERROTA 1
+  - LINEA DERROTA 2
+  - LINEA DERROTA 3
+  - LINEA DERROTA 4
+  - LINEA DERROTA 5
   charsPerSecond: 40
-  continuarButton: {fileID: 1538300586}
 --- !u!1 &1953153007
 GameObject:
   m_ObjectHideFlags: 0

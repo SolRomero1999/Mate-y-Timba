@@ -13,6 +13,7 @@ public class DialogueManualAdvance : MonoBehaviour
     [TextArea] public string[] linesPostTutorial;
     [TextArea] public string[] linesPostNivel1;
     [TextArea] public string[] linesPostNivel2;
+    [TextArea] public string[] linesDerrota;
 
     public float charsPerSecond = 40f;
 
@@ -23,13 +24,6 @@ public class DialogueManualAdvance : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log($"=== DIALOGO START ===");
-        Debug.Log($"CurrentLevel: {LevelManager.CurrentLevel}");
-        Debug.Log($"UltimoNivelCompletado: {LevelManager.UltimoNivelCompletado}");
-        Debug.Log($"tutorialDialogoVisto: {LevelManager.tutorialDialogoVisto}");
-        Debug.Log($"EsPrimerDialogo(): {LevelManager.EsPrimerDialogo()}");
-        Debug.Log($"EsPostTutorial(): {LevelManager.EsPostTutorial()}");
-        
         continuarButton.onClick.AddListener(NextLine);
         dialogueText.text = "";
 
@@ -39,6 +33,15 @@ public class DialogueManualAdvance : MonoBehaviour
 
     private void SeleccionarDialogo()
     {
+        if (LevelManagerFlags.VieneDeDerrota)
+        {
+            lines = new string[]
+            {
+                linesDerrota[Random.Range(0, linesDerrota.Length)]
+            };
+            return;
+        }
+
         if (LevelManager.EsPrimerDialogo())
         {
             lines = linesInicial;
@@ -50,12 +53,11 @@ public class DialogueManualAdvance : MonoBehaviour
         else
         {
             int nivelCompletado = LevelManager.UltimoNivelCompletado;
+
             if (nivelCompletado == 1)
                 lines = linesPostNivel1;
-            else if (nivelCompletado == 2)
-                lines = linesPostNivel2;
             else
-                lines = linesPostNivel2; 
+                lines = linesPostNivel2;
         }
     }
 
@@ -81,19 +83,19 @@ public class DialogueManualAdvance : MonoBehaviour
 
     private void IrASiguienteEscena()
     {
-        Debug.Log($"=== IR A SIGUIENTE ESCENA ===");
-        Debug.Log($"TutorialVisto: {LevelManager.tutorialDialogoVisto}");
-        Debug.Log($"CurrentLevel: {LevelManager.CurrentLevel}");
-        Debug.Log($"UltimoNivelCompletado: {LevelManager.UltimoNivelCompletado}");
-        
+        if (LevelManagerFlags.VieneDeDerrota)
+        {
+            LevelManagerFlags.VieneDeDerrota = false;
+            LevelManager.IniciarNivelActual();
+            return;
+        }
+
         if (!LevelManager.tutorialDialogoVisto)
         {
-            Debug.Log("Iniciando TUTORIAL por primera vez");
             LevelManager.IniciarTutorial();
         }
         else
         {
-            Debug.Log($"Iniciando NIVEL {LevelManager.CurrentLevel}");
             LevelManager.IniciarNivelActual();
         }
     }
@@ -117,3 +119,4 @@ public class DialogueManualAdvance : MonoBehaviour
         continuarButton.onClick.RemoveListener(NextLine);
     }
 }
+

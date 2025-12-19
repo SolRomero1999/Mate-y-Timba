@@ -1,13 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public static class LevelManagerFlags
+{
+    public static bool VieneDeDerrota = false;
+}
+
 public static class LevelManager
 {
     public static int CurrentLevel = 0;
     public static bool reglasEliminacionActivas = false;
     public static bool tutorialDialogoVisto = false;
     public static int UltimoNivelCompletado = -1; 
-
     private const string SCENE_DIALOGO = "GrandsonScene";
     private const string SCENE_TUTORIAL = "0.Gameplay_Tutorial_Abuelo";
 

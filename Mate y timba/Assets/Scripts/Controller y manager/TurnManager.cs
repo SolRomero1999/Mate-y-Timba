@@ -19,7 +19,6 @@ public class TurnManager : MonoBehaviour
             panelResultado.SetActive(false);
 
         mensajeFinal.gameObject.SetActive(false);
-
         StartCoroutine(IniciarTurnos());
     }
 
@@ -35,7 +34,6 @@ public class TurnManager : MonoBehaviour
     {
         turnoJugador = true;
         FindFirstObjectByType<GameController>().jugadorYaRobo = false;
-        Debug.Log("TURNO DEL JUGADOR");
     }
 
     public void TerminarTurnoJugador()
@@ -43,8 +41,6 @@ public class TurnManager : MonoBehaviour
         if (!turnoJugador) return;
 
         turnoJugador = false;
-        Debug.Log("Jugador terminó su turno");
-
         VerificarFinDePartida();
         StartCoroutine(TurnoIA());
     }
@@ -59,8 +55,6 @@ public class TurnManager : MonoBehaviour
     #region Turno IA
     private IEnumerator TurnoIA()
     {
-        Debug.Log("TURNO DE LA IA");
-
         yield return new WaitForSeconds(delayIA);
 
         if (game.manoIAActual.Count < 5)
@@ -90,8 +84,6 @@ public class TurnManager : MonoBehaviour
         {
             FinalizarPartida();
         }
-
-        Debug.Log($"[DEBUG FIN] JugadorCeldas:{jugadorTieneCeldas} | IACeldas:{iaTieneCeldas} | MazoVacio:{mazoVacio}");
     }
 
     private void FinalizarPartida()
@@ -116,10 +108,8 @@ public class TurnManager : MonoBehaviour
             {
                 mensajeFinal.text = "¡TUTORIAL COMPLETADO!";
                 LevelManager.tutorialDialogoVisto = true;
-
                 LevelManager.UltimoNivelCompletado = 0;
                 LevelManager.CurrentLevel = 1;
-
                 StartCoroutine(VolverADialogo());
             }
             else
@@ -141,7 +131,8 @@ public class TurnManager : MonoBehaviour
         else
         {
             mensajeFinal.text = "DERROTA";
-            StartCoroutine(RepetirNivel());
+            LevelManagerFlags.VieneDeDerrota = true;
+            StartCoroutine(VolverADialogo());
         }
 
         Time.timeScale = 0f;
@@ -159,13 +150,6 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(2.5f);
         Time.timeScale = 1f;
         LevelManager.IniciarTutorial();
-    }
-
-    private IEnumerator RepetirNivel()
-    {
-        yield return new WaitForSecondsRealtime(2.5f);
-        Time.timeScale = 1f;
-        LevelManager.IniciarNivelActual();
     }
     #endregion
 }
