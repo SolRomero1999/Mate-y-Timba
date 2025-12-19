@@ -3,49 +3,70 @@ using UnityEngine.SceneManagement;
 
 public static class LevelManager
 {
-    public static int CurrentLevel = 1;
-
-    public static bool reglasEliminacionActivas = true;
-    public static bool dialogoPostTutorial = false;
+    public static int CurrentLevel = 0;
+    public static bool reglasEliminacionActivas = false;
     public static bool tutorialDialogoVisto = false;
-    private const string SCENE_TUTORIAL = "0.Gameplay_Tutorial_Abuelo";
+    public static int UltimoNivelCompletado = -1; 
+
     private const string SCENE_DIALOGO = "GrandsonScene";
+    private const string SCENE_TUTORIAL = "0.Gameplay_Tutorial_Abuelo";
 
     private static readonly string[] GAME_SCENES =
     {
-        "1.GameScene",   
-        "2.GameScene",  
-        "3.GameScene"    
+        "1.GameScene", // índice 0 
+        "2.GameScene", 
+        "3.GameScene"  
     };
 
-    public static void StartLevelTuto()
+    public static void IrADialogo()
+    {
+        SceneManager.LoadScene(SCENE_DIALOGO);
+    }
+
+    public static void IniciarTutorial()
     {
         reglasEliminacionActivas = false;
+        CurrentLevel = 0;
         SceneManager.LoadScene(SCENE_TUTORIAL);
     }
 
-    public static void GoToDialogue()
+    public static void IniciarNivelActual()
     {
-        dialogoPostTutorial = false;
-        SceneManager.LoadScene(SCENE_DIALOGO);
+        reglasEliminacionActivas = CurrentLevel >= 2;
+
+        if (CurrentLevel == 0)
+        {
+            SceneManager.LoadScene(SCENE_TUTORIAL);
+        }
+        else
+        {
+            int index = CurrentLevel - 1; 
+            if (index >= 0 && index < GAME_SCENES.Length)
+            {
+                Debug.Log($"Cargando nivel {CurrentLevel} -> escena: {GAME_SCENES[index]}");
+                SceneManager.LoadScene(GAME_SCENES[index]);
+            }
+            else
+            {
+                Debug.LogError($"No hay escena para el nivel {CurrentLevel}");
+            }
+        }
     }
 
-    public static void GoToDialogue_PostTutorial()
+    public static void AvanzarNivel()
     {
-        dialogoPostTutorial = true;
-        SceneManager.LoadScene(SCENE_DIALOGO);
-    }
-
-    public static void StartLevelNormal()
-    {
-        reglasEliminacionActivas = CurrentLevel > 1;
-
-        int index = Mathf.Clamp(CurrentLevel - 1, 0, GAME_SCENES.Length - 1);
-        SceneManager.LoadScene(GAME_SCENES[index]);
-    }
-
-    public static void NextLevel()
-    {
+        UltimoNivelCompletado = CurrentLevel;
         CurrentLevel++;
+        Debug.Log($"Nivel {UltimoNivelCompletado} completado. Avanzando a nivel {CurrentLevel}");
+    }
+
+    public static bool EsPrimerDialogo()
+    {
+        return !tutorialDialogoVisto;
+    }
+
+    public static bool EsPostTutorial()
+    {
+        return tutorialDialogoVisto && UltimoNivelCompletado == 0;
     }
 }

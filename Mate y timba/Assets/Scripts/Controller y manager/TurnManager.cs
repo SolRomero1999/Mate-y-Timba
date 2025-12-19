@@ -9,6 +9,8 @@ public class TurnManager : MonoBehaviour
     public TextMeshProUGUI mensajeFinal;
     public float delayIA = 1f;
     private bool turnoJugador = true;
+    private bool partidaTerminada = false;
+
 
     #region Inicio
     private void Start()
@@ -93,30 +95,35 @@ public class TurnManager : MonoBehaviour
 
     private void FinalizarPartida()
     {
+        if (partidaTerminada) return;  
+        partidaTerminada = true;
+
         ScoreManager sm = FindFirstObjectByType<ScoreManager>();
         sm.ActualizarPuntajes();
 
         int puntosJugador = int.Parse(sm.puntajeTotalJugador.text);
         int puntosIA = int.Parse(sm.puntajeTotalIA.text);
-        int diferencia = Mathf.Abs(puntosJugador - puntosIA);
 
         panelResultado.SetActive(true);
         mensajeFinal.gameObject.SetActive(true);
 
         bool jugadorGana = puntosJugador > puntosIA;
 
-        if (!LevelManager.reglasEliminacionActivas)
+        if (LevelManager.CurrentLevel == 0)
         {
             if (jugadorGana)
             {
-                mensajeFinal.text = $"<color=#4CFF4C>¡TUTORIAL COMPLETADO!</color>\nGanaste por {diferencia} puntos.";
-                Debug.Log("GANÓ EL JUGADOR EN EL TUTORIAL → Diálogo post tutorial");
-                StartCoroutine(VolverAlNieto_PostTutorial());
+                mensajeFinal.text = "¡TUTORIAL COMPLETADO!";
+                LevelManager.tutorialDialogoVisto = true;
+
+                LevelManager.UltimoNivelCompletado = 0;
+                LevelManager.CurrentLevel = 1; 
+
+                StartCoroutine(VolverADialogo());
             }
             else
             {
-                mensajeFinal.text = $"<color=#FF4C4C>DERROTA</color>\nVolvamos a intentar el tutorial…";
-                Debug.Log("PERDIÓ EL JUGADOR EN EL TUTORIAL → Reiniciar tutorial");
+                mensajeFinal.text = "REINTENTA EL TUTORIAL";
                 StartCoroutine(ReiniciarTutorial());
             }
 
@@ -126,48 +133,38 @@ public class TurnManager : MonoBehaviour
 
         if (jugadorGana)
         {
-            mensajeFinal.text = $"<color=#4CFF4C>VICTORIA</color>\nGanaste por {diferencia} puntos.";
-            Debug.Log("VICTORIA DEL JUGADOR EN NIVEL NORMAL");
-
-            LevelManager.NextLevel();
-            StartCoroutine(VolverAlNieto_Normal());
+            mensajeFinal.text = "VICTORIA";
+            LevelManager.AvanzarNivel();
+            StartCoroutine(VolverADialogo());
         }
         else
         {
-            mensajeFinal.text = $"<color=#FF4C4C>DERROTA</color>\nLa IA ganó por {diferencia} puntos.";
-            Debug.Log("DERROTA – repetir nivel normal");
-            StartCoroutine(RepetirNivelNormal());
+            mensajeFinal.text = "DERROTA";
+            StartCoroutine(RepetirNivel());
         }
 
         Time.timeScale = 0f;
+    }
+
+    private IEnumerator VolverADialogo()
+    {
+        yield return new WaitForSecondsRealtime(2.5f);
+        Time.timeScale = 1f;
+        LevelManager.IrADialogo();
     }
 
     private IEnumerator ReiniciarTutorial()
     {
         yield return new WaitForSecondsRealtime(2.5f);
         Time.timeScale = 1f;
-        LevelManager.StartLevelTuto();
+        LevelManager.IniciarTutorial();
     }
 
-    private IEnumerator VolverAlNieto_PostTutorial()
+    private IEnumerator RepetirNivel()
     {
         yield return new WaitForSecondsRealtime(2.5f);
         Time.timeScale = 1f;
-        LevelManager.GoToDialogue_PostTutorial();
-    }
-
-    private IEnumerator VolverAlNieto_Normal()
-    {
-        yield return new WaitForSecondsRealtime(2.5f);
-        Time.timeScale = 1f;
-        LevelManager.GoToDialogue();
-    }
-
-    private IEnumerator RepetirNivelNormal()
-    {
-        yield return new WaitForSecondsRealtime(2.5f);
-        Time.timeScale = 1f;
-        LevelManager.StartLevelNormal();
+        LevelManager.IniciarNivelActual();
     }
     #endregion
 }
